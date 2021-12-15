@@ -1,4 +1,30 @@
 {
+  "name": "the-library",
+  "version": "1.0.0",
+  "description": "personal projects sgarcia",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "format": "prettier \"**/*.{js,jsx,ts,tsx}\" --write",
+    "lint-global": "echo \"Prettier is running...\" && prettier \"**/*.{js,jsx,ts,tsx}\" --write && echo \"ESlint is running...\" && eslint ."
+  },
+  "author": "sgarcia",
+  "license": "ISC",
+  "dependencies": {
+    "@condor-labs/health-middleware": "^1.1.2",
+    "@condor-labs/mongodb": "^1.1.2",
+    "@graphql-tools/schema": "^8.3.1",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.3.0",
+    "graphql-tools": "^8.2.0",
+    "http-errors": "^1.8.1",
+    "mongoose": "^6.1.1",
+    "mongoose-unique-validator": "^3.0.0",
+    "nodemon": "^2.0.15"
+  },
   "devDependencies": {
     "@babel/core": "~7.15.5",
     "@babel/eslint-parser": "~7.15.4",
@@ -16,11 +42,6 @@
     "husky": "7.0.4",
     "lint-staged": "10.5.4",
     "prettier": "2.5.1"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "format": "prettier \"**/*.{js,jsx,ts,tsx}\" --write",
-    "lint-global": "echo \"Prettier is running...\" && prettier \"**/*.{js,jsx,ts,tsx}\" --write && echo \"ESlint is running...\" && eslint ."
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

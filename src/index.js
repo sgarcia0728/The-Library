@@ -1,17 +1,28 @@
 const express = require('express');
 const app = express();
-const book = require('./routes/book');
-require('./database/server');
+const createError = require('http-errors');
+const { healthMonitor } = require('@condor-labs/health-middleware');
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./graphql/schema');
+const bookRoutes = require('./routes/book');
+const { PORT = 3000 } = process.env;
 
-const PORT = 3000;
-const HOST = '0.0.0.0';
-
+healthMonitor(app);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(book);
 
-app.listen(PORT, HOST, () => {
-  //console.log(`server iniciado en el puerto ${PORT}`);
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    graphiql: true,
+    schema: schema,
+  })
+);
+
+app.use(bookRoutes);
+
+app.listen(PORT, () => {
+  console.log(`server iniciado en el puerto ${PORT}`);
 });
 
 module.exports = app;
