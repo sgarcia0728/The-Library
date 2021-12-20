@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+    the-library-api:
+        container_name: the-library-api
+        restart: always
+        build: .
+        ports:
+          - "4000:3000"
+        environment:
+          - NODE_ENV=development
+          - PORT=3000
+          - MONGODB_HOST=mongo
+          - MONGODB_PORT=27017
+          - MONGODB_DB_NAME=TheLibrary
+          - REDIS_HOST=redis
+          - REDIS_PORT=6379
+          - MONGODB_AUTHSOURCE=admin
+        links:
+          - mongo
+          - redis
+        volumes:
+          - .:/node/app
+    mongo:
+        container_name: mongo
+        image: mongo
+        ports:
+          - "27017:27017"
+        logging: 
+          driver: none
+    redis:
+        container_name: redis
+        image: redis
+        ports:
+          - "6379:6379"
+
+

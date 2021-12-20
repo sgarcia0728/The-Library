@@ -1,4 +1,3 @@
-const controller = require('../controllers/book');
 const bookService = require('../services/bookService');
 const resolvers = {
   Query: {
@@ -13,14 +12,14 @@ const resolvers = {
   Mutation: {
     async createBook(_, { book }) {
       const newBook = await bookService.saveBook(book);
-      return await ({ _id, title, author, pages, status, createdAt, updatedAt } = newBook);
+      const res = await ({ _id, title, author, pages, status, createdAt, updatedAt } = newBook);
+      return res;
     },
     async updateBook(_, { id, book }) {
-      const updatedBook = await bookService.updateBook(id, { ...book });
-      return await updatedBook;
+      return await bookService.updateBook(id, { ...book });
     },
     async deleteBook(_, { id }) {
-      const deletedBook = await bookService.deleteBook(id);
+      await bookService.deleteBook(id);
       return true;
     },
   },

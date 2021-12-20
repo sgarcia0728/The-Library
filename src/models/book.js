@@ -1,5 +1,5 @@
 const mongodb = require('@condor-labs/mongodb')();
-const helperMongo = require('../mongoHelper');
+const helperMongo = require('../helpers/mongoHelper');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const bookSchema = new mongodb.mongoose.Schema(
@@ -31,8 +31,6 @@ bookSchema.plugin(uniqueValidator);
 
 module.exports.get = async (mongoHelper) => {
   await mongoHelper.connect();
-
-  const dbConnection = helperMongo.clients['connection_mongo_atlas'];
-
+  const dbConnection = helperMongo.clients['mongo'];
   return dbConnection.model('Book', bookSchema);
 };

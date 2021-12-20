@@ -1,7 +1,4 @@
 const bookService = require('../services/bookService');
-const mongoHelper = require('../database/mongoHelper');
-const BookModel = require('../database/models/book');
-const { async } = require('rxjs');
 
 const getAllBooks = async (req, res) => {
   try {
@@ -16,31 +13,48 @@ const getAllBooks = async (req, res) => {
 const getBook = async (req, res) => {
   try {
     const { id } = req.params;
+
     const book = await bookService.getOne(id);
     return res.json(book);
-  } catch (error) {
-    return res.json(error);
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ error: `Id ${err.value} is not found` });
+    }
+
+    return res.status(500).json({ error: 'Error in server' });
   }
 };
 
 const createBook = async (req, res) => {
   try {
-    const book = await bookService.saveBook(req.body);
-    return res.json(book);
-  } catch (error) {
-    console.log;
-    return res.json(error);
+    const newBook = await bookService.saveBook(req.body);
+    return res.status(201).json(newBook);
+  } catch (err) {
+    const error = err.message || err.details[0].message;
+    return res.status(400).json({ error: error });
   }
 };
 
 const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('este es el id: ' + id);
     const book = await bookService.updateBook(id, { ...req.body });
     return res.json(book);
-  } catch (error) {
-    return res.json(error);
+  } catch (err) {
+    let error;
+    if (err.kind == 'ObjectId') {
+      error = res.status(404).json({ error: `Id ${err.value} is not found` });
+    } else if (err.codeName == 'DuplicateKey') {
+      const key = Object.keys(err.keyValue)[0];
+      const valueKey = err.keyValue[key];
+      error = res.status(400).json({ error: `Duplicate Key, "${key} : ${valueKey}" ` });
+    } else if (err.details[0]) {
+      error = res.status(400).json({ error: err.details[0].message });
+    } else {
+      error = res.status(500).json({ error: 'Error in Server' });
+    }
+
+    return error;
   }
 };
 
@@ -49,42 +63,18 @@ const deleteBook = async (req, res) => {
     const { id } = req.params;
     const book = await bookService.deleteBook(id);
     return res.json(book);
-  } catch (error) {
-    return res.json(error);
+  } catch (err) {
+    let error;
+    if (err.kind === 'ObjectId') {
+      error = res.status(404).json({ error: `Id ${err.value} is not found` });
+    }
+
+    error = res.status(500).json({ error: 'Error in server' });
+
+    return error;
   }
 };
-/*
-const updateBook = async (req, res) => {
-  const book = await BookModel.get(mongoHelper);
-  const { id } = req.params;
-  book
-    .findById(id)
-    .then((data) => {
-      Object.assign(data, req.body);
-      data.save();
-      res.send({ data });
-    })
-    .catch((e) => {
-      res.status(404).send({ error: 'book is not found!' });
-    });
-};
 
-const deleteBook = async (req, res) => {
-  const book = await bookModel.get(mongoHelper);
-  const { id } = req.params;
-  book
-    .findById(id)
-    .then((data) => {
-      data.remove();
-      res.send({ data: true });
-    })
-    .catch((error) => {
-      res.send({ error });
-    });
-};
-
-
-*/
 module.exports = {
   getAllBooks,
   getBook,
