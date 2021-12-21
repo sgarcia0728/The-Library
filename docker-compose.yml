@@ -33,5 +33,16 @@ services:
         image: redis
         ports:
           - "6379:6379"
+    redis-commander:
+        container_name: redis-commander
+        hostname: redis-commander
+        image: rediscommander/redis-commander
+        restart: always
+        environment:
+          - REDIS_HOSTS=redis
+        ports:
+          - "8081:8081"
+        links:
+          - redis
 
 

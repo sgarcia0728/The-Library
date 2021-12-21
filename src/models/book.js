@@ -21,7 +21,6 @@ const bookSchema = new mongodb.mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ['LENT', 'AVAILABLE', 'UNAVAILABLE'],
     },
   },
   { timestamps: true, versionKey: false }

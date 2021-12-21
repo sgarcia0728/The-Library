@@ -42,9 +42,9 @@ const updateBook = async (req, res) => {
     return res.json(book);
   } catch (err) {
     let error;
-    if (err.kind == 'ObjectId') {
+    if (err.kind === 'ObjectId') {
       error = res.status(404).json({ error: `Id ${err.value} is not found` });
-    } else if (err.codeName == 'DuplicateKey') {
+    } else if (err.codeName === 'DuplicateKey') {
       const key = Object.keys(err.keyValue)[0];
       const valueKey = err.keyValue[key];
       error = res.status(400).json({ error: `Duplicate Key, "${key} : ${valueKey}" ` });

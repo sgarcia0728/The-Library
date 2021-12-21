@@ -11,9 +11,7 @@ const resolvers = {
 
   Mutation: {
     async createBook(_, { book }) {
-      const newBook = await bookService.saveBook(book);
-      const res = await ({ _id, title, author, pages, status, createdAt, updatedAt } = newBook);
-      return res;
+      return await bookService.saveBook(book);
     },
     async updateBook(_, { id, book }) {
       return await bookService.updateBook(id, { ...book });

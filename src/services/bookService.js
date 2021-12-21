@@ -23,8 +23,8 @@ const getOne = async (id) => {
 
 const saveBook = async (bookInfo) => {
   const data = { ...bookInfo };
-  data.status = data.status.toUpperCase();
   await validateData.validateBook(data);
+  data.status = data.status.toUpperCase();
   const bookModel = await BookModel.get(mongoHelper);
   const res = await bookModel.create(data);
   return res;
@@ -32,11 +32,13 @@ const saveBook = async (bookInfo) => {
 
 const updateBook = async (id, bookInfo) => {
   const data = { ...bookInfo };
-  await validateData.validateBook(data);
-  data.status = data.status.toUpperCase();
+  //await validateData.validateBook(data);
+
+  data.status = data?.status?.toUpperCase();
+
   const bookModel = await BookModel.get(mongoHelper);
   const foundCache = await redisHelper.redisGet(id);
-  const res = await bookModel.findOneAndUpdate({ _id: id }, { ...data }, { new: true });
+  const res = await bookModel.findOneAndUpdate({ _id: id }, { $set: { ...data } }, { new: true });
   if (foundCache) {
     await redisHelper.redisDel(id);
     await redisHelper.redisSet(id, JSON.stringify(res));
