@@ -1,31 +1,47 @@
 require('dotenv').config();
-const express = require('express');
-const app = express();
-const { graphqlHTTP } = require('express-graphql');
-const schema = require('./graphql/schema');
 const logger = require('@condor-labs/logger');
-const bookRoutes = require('./routes/book');
+const helperMongo = require('./helpers/mongoHelper');
 const PORT = process.env.PORT || 3000;
 
-const heatlhMonitor = require('./middlewares/healthMonitor');
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    graphiql: true,
-    schema: schema,
+helperMongo
+  .connect()
+  .then((res) => {
+    if (res) {
+      const app = require('./app');
+      app.listen(PORT, () => {
+        logger.log(`server iniciado en el puerto ${PORT}`);
+      });
+    }
+    const clientMongo = helperMongo.clients;
+    //console.log(clientMongo);
   })
-);
+  .catch((err) => {
+    logger.log(err);
+  });
 
-heatlhMonitor.monitor(app);
-
-app.use('/v1', bookRoutes);
-
-app.listen(PORT, () => {
-  logger.log(`server iniciado en el puerto ${PORT}`);
+process.on('message', async (msg) => {
+  if (msg == 'SHUTDOWN') {
+    if (helperMongo.isConnected()) {
+      await helperMongo.connect.disconnect();
+    }
+    process.exit(0);
+  }
 });
 
-module.exports = app;
+/*
+ .then((res) => {
+    console.log(res);
+    if (res) {
+      app.listen(PORT, () => {
+        logger.log(`server iniciado en el puerto ${PORT}`);
+      });
+      console.log('ggggg');
+      if (helperMongo.isConnected()) {
+        console.log('conectado a mongo');
+      }
+    }
+  })
+  .catch((err) => {
+    logger.log(err);
+  });
+*/

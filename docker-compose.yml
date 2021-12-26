@@ -16,6 +16,7 @@ services:
           - REDIS_HOST=redis
           - REDIS_PORT=6379
           - MONGODB_AUTHSOURCE=admin
+          - MONGODB_CONNECTION_NAME=mongo
         links:
           - mongo
           - redis

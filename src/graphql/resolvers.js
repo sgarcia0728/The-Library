@@ -1,8 +1,9 @@
 const bookService = require('../services/bookService');
 const resolvers = {
   Query: {
-    async books() {
-      return await bookService.getAll();
+    async books(root, { bookFilter, pagination }) {
+      const params = { ...bookFilter, ...pagination };
+      return await bookService.getAll(params);
     },
     async book(root, { id }) {
       return await bookService.getOne(id);

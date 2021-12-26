@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const validateBook = async (data) => {
+const validateSaveBook = async (data) => {
   const schema = Joi.object({
     title: Joi.string().required(),
     author: Joi.string().required(),
@@ -10,4 +10,14 @@ const validateBook = async (data) => {
   await schema.validateAsync(data);
 };
 
-module.exports = { validateBook };
+const validateUpdateBook = async (data) => {
+  const schema = Joi.object({
+    title: Joi.string(),
+    author: Joi.string(),
+    pages: Joi.number(),
+    status: Joi.string().valid('LENT', 'AVAILABLE', 'UNAVAILABLE').insensitive(),
+  });
+  await schema.validateAsync(data);
+};
+
+module.exports = { validateSaveBook, validateUpdateBook };
