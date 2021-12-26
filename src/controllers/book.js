@@ -1,3 +1,84 @@
-exports.getbooks = (req, res) => {
-  res.send({ data: 'esto es el controlador' });
+const bookService = require('../services/bookService');
+
+const getAllBooks = async (req, res) => {
+  try {
+    const books = await bookService.getAll();
+
+    return res.json(books);
+  } catch (error) {
+    return res.json(error);
+  }
+};
+
+const getBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const book = await bookService.getOne(id);
+    return res.json(book);
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ error: `Id ${err.value} is not found` });
+    }
+
+    return res.status(500).json({ error: 'Error in server' });
+  }
+};
+
+const createBook = async (req, res) => {
+  try {
+    const newBook = await bookService.saveBook(req.body);
+    return res.status(201).json(newBook);
+  } catch (err) {
+    const error = err.message || err.details[0].message;
+    return res.status(400).json({ error: error });
+  }
+};
+
+const updateBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await bookService.updateBook(id, { ...req.body });
+    return res.json(book);
+  } catch (err) {
+    let error;
+    if (err.kind === 'ObjectId') {
+      error = res.status(404).json({ error: `Id ${err.value} is not found` });
+    } else if (err.codeName === 'DuplicateKey') {
+      const key = Object.keys(err.keyValue)[0];
+      const valueKey = err.keyValue[key];
+      error = res.status(400).json({ error: `Duplicate Key, "${key} : ${valueKey}" ` });
+    } else if (err.details[0]) {
+      error = res.status(400).json({ error: err.details[0].message });
+    } else {
+      error = res.status(500).json({ error: 'Error in Server' });
+    }
+
+    return error;
+  }
+};
+
+const deleteBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await bookService.deleteBook(id);
+    return res.json(book);
+  } catch (err) {
+    let error;
+    if (err.kind === 'ObjectId') {
+      error = res.status(404).json({ error: `Id ${err.value} is not found` });
+    }
+
+    error = res.status(500).json({ error: 'Error in server' });
+
+    return error;
+  }
+};
+
+module.exports = {
+  getAllBooks,
+  getBook,
+  updateBook,
+  deleteBook,
+  createBook,
 };

@@ -1,0 +1,7 @@
+apps:
+  - script: ./src/index.js
+    name: 'the-library'
+    max_memory_restart: 200M
+    log_date_format: 'YYYY/MM/DD HH:mm:ss'
+    instances: 1
+    exec_mode: fork
