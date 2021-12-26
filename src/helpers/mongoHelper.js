@@ -2,13 +2,14 @@
 
 const mongoDbSettings = [
   {
-    connectionName: 'mongo',
+    connectionName: process.env.MONGODB_CONNECTION_NAME,
     host: process.env.MONGODB_HOST || 'mongo',
     port: process.env.MONGODB_PORT || 27017,
-    database: process.env.MONGODB_DB_NAME || 'TheLibrary',
+    database: process.env.MONGODB_DB_NAME || 'TheLibrary2',
     user: process.env.MONGODB_USER || '',
     password: process.env.MONGODB_PASSWORD || '',
-    ssl: false,
+    ssl: process.env.MONGODB_SSL || false,
+    replicaSet: process.env.MONGODB_REPLICASET,
     authSource: process.env.MONGODB_AUTHSOURCE || 'admin',
     //connectionName: 'connection_mongo_atlas',
     //host: 'clustersgr-shard-00-02.usmnz.mongodb.net,clustersgr-shard-00-01.usmnz.mongodb.net,clustersgr-shard-00-00.usmnz.mongodb.net',
@@ -25,16 +26,14 @@ const mongoDbSettings = [
 const mongo = require('@condor-labs/mongodb')(mongoDbSettings);
 
 const helper = {
-  clients: {}, // In clients we will save our connections that the library send us
+  clients: {},
   isConnected: (connectionName) => {
     return mongo._isConnected(connectionName);
   },
   connect: async () => {
-    // It will connect every connection on the array "mongoDbSettings"
-    for (const item of mongoDbSettings) {
-      const client = await mongo.getClient(item.connectionName);
-      helper.clients[item.connectionName] = client;
-    }
+    const client = await mongo.getClient(mongoDbSettings[0].connectionName);
+    helper.clients[mongoDbSettings[0].connectionName] = client;
+    return client;
   },
 };
 

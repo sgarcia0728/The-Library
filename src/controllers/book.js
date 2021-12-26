@@ -1,12 +1,18 @@
 const bookService = require('../services/bookService');
+const bookModel = require('../models/book');
 
-const getAllBooks = async (req, res) => {
+const getBooks = async (req, res) => {
   try {
-    const books = await bookService.getAll();
+    const books = await bookService.getAll(req.body);
 
     return res.json(books);
-  } catch (error) {
-    return res.json(error);
+  } catch (err) {
+    console.log(err);
+    if (err instanceof SyntaxError) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -14,14 +20,14 @@ const getBook = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const book = await bookService.getOne(id);
+    const book = await bookService.getOne(id, bookModel);
     return res.json(book);
   } catch (err) {
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ error: `Id ${err.value} is not found` });
     }
 
-    return res.status(500).json({ error: 'Error in server' });
+    return res.status(500).json(err);
   }
 };
 
@@ -30,6 +36,7 @@ const createBook = async (req, res) => {
     const newBook = await bookService.saveBook(req.body);
     return res.status(201).json(newBook);
   } catch (err) {
+    console.log(err);
     const error = err.message || err.details[0].message;
     return res.status(400).json({ error: error });
   }
@@ -76,7 +83,7 @@ const deleteBook = async (req, res) => {
 };
 
 module.exports = {
-  getAllBooks,
+  getBooks,
   getBook,
   updateBook,
   deleteBook,

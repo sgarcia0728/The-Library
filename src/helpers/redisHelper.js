@@ -1,5 +1,5 @@
 const settings = {
-  host: 'redis',
+  host: process.env.REDIS_HOST || 'redis',
   prefix: 'the-library-sg',
   port: 6379,
 };

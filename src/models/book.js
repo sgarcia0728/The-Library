@@ -28,8 +28,6 @@ const bookSchema = new mongodb.mongoose.Schema(
 
 bookSchema.plugin(uniqueValidator);
 
-module.exports.get = async (mongoHelper) => {
-  await mongoHelper.connect();
-  const dbConnection = helperMongo.clients['mongo'];
-  return dbConnection.model('Book', bookSchema);
-};
+const dbConnection = helperMongo.clients[process.env.MONGODB_CONNECTION_NAME];
+const bookModel = dbConnection.model('Book', bookSchema);
+module.exports = bookModel;
