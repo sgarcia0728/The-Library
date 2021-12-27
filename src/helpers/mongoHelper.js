@@ -19,7 +19,7 @@ const mongoDbSettings = [
     //password: 'QaWsEd123',
     //seplicaSet: 'compliance-support-shard-0',
     //ssl: true,
-    //authSource: 'admin',
+    //authSource: 'admin',//
   },
 ];
 
