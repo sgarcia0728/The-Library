@@ -2,7 +2,13 @@ require('dotenv').config();
 const logger = require('@condor-labs/logger');
 const helperMongo = require('./helpers/mongoHelper');
 const PORT = process.env.PORT || 3000;
+const app = require('./app');
 
+app.listen(PORT, () => {
+  logger.log(`server iniciado en el puerto ${PORT}`);
+});
+
+/*
 helperMongo
   .connect()
   .then((res) => {
@@ -12,8 +18,6 @@ helperMongo
         logger.log(`server iniciado en el puerto ${PORT}`);
       });
     }
-    const clientMongo = helperMongo.clients;
-    //console.log(clientMongo);
   })
   .catch((err) => {
     logger.log(err);
@@ -26,22 +30,4 @@ process.on('message', async (msg) => {
     }
     process.exit(0);
   }
-});
-
-/*
- .then((res) => {
-    console.log(res);
-    if (res) {
-      app.listen(PORT, () => {
-        logger.log(`server iniciado en el puerto ${PORT}`);
-      });
-      console.log('ggggg');
-      if (helperMongo.isConnected()) {
-        console.log('conectado a mongo');
-      }
-    }
-  })
-  .catch((err) => {
-    logger.log(err);
-  });
-*/
+});*/

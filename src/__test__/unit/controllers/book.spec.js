@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../../../app');
 const bookService = require('../../../services/bookService');
 const { mongoose } = require('@condor-labs/mongodb')();
+
 const book = {
   _id: 'sdf334d33dd2t555',
   title: 'Captain America',
@@ -76,7 +77,7 @@ describe('GET /books/:id', () => {
     bookService.getOne.mockRestore();
   });
 
-  it('should return 200 status code when ID do not exists and return an objects with the correct properties', async () => {
+  it('should return 200 status code when ID exists and return an objects with the correct properties', async () => {
     const statusExpected = 200;
     const objectExpected = { ...book };
 
@@ -97,6 +98,19 @@ describe('GET /books/:id', () => {
       updatedAt: expect.any(String),
     });
 
+    bookService.getOne.mockRestore();
+  });
+
+  it('should return 500 status code for internal error ', async () => {
+    const statusExpected = 500;
+
+    jest.spyOn(bookService, 'getOne').mockImplementation(() => Promise.reject(new Error()));
+
+    const response = await request(app)
+      .get('/v1/books/' + bookId)
+      .send();
+
+    expect(response.status).toEqual(statusExpected);
     bookService.getOne.mockRestore();
   });
 });

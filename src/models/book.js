@@ -28,6 +28,14 @@ const bookSchema = new mongodb.mongoose.Schema(
 
 bookSchema.plugin(uniqueValidator);
 
+const get = async () => {
+  await helperMongo.connect();
+  const dbConnection = helperMongo.clients[process.env.MONGODB_CONNECTION_NAME];
+  return dbConnection.model('Book', bookSchema);
+};
+
+module.exports = { get };
+/*
 const dbConnection = helperMongo.clients[process.env.MONGODB_CONNECTION_NAME];
-const bookModel = dbConnection.model('Book', bookSchema);
-module.exports = bookModel;
+const bookModel = dbConnection.model('Book', bookSchema); //mongodb.mongoose.model('Book', bookSchema);
+module.exports = bookModel;*/
