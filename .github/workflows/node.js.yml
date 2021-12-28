@@ -13,7 +13,20 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_HOST: clustersgr-shard-00-02.usmnz.mongodb.net,clustersgr-shard-00-01.usmnz.mongodb.net,clustersgr-shard-00-00.usmnz.mongodb.net
+      MONGODB_CONNECTION_NAME: connection_mongo_atlas
+      MONGODB_PORT: 27017
+      MONGODB_DB_NAME: TheLibrary
+      MONGODB_USER: sagr0728
+      MONGODB_PASSWORD: QaWsEd123
+      MONGODB_REPLICASET: atlas-3avstg-shard-0
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
+      MONGODB_SSL: true
+      MONGODB_AUTHSOURCE: admin
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
