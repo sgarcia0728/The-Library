@@ -13,7 +13,7 @@ const getAll = async (params) => {
   //const clientConnect = helperMongo.clients[process.env.MONGODB_CONNECTION_NAME];
   //console.log(clientConnect)
   //const BookModel = await clientConnect.model(bookModel);
-  //console.log(BookModel.find());
+  //console.log(BookModel.find());//
   const bookModel = await BookModel.get();
 
   sort = typeof sort !== 'object' ? JSON.parse(sort) : sort;
