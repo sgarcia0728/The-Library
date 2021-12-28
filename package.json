@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/index.js",
-    "test": "node_modules/.bin/jest --watch",
+    "test": "jest --watch",
     "lint": "eslint .",
     "format": "prettier \"**/*.{js,jsx,ts,tsx}\" --write",
     "lint-global": "echo \"Prettier is running...\" && prettier \"**/*.{js,jsx,ts,tsx}\" --write && echo \"ESlint is running...\" && eslint ."
