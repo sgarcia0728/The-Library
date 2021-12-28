@@ -1,6 +1,6 @@
 const bookService = require('../services/bookService');
 const bookModel = require('../models/book');
-
+require('dotenv').config();
 const getBooks = async (req, res) => {
   try {
     const books = await bookService.getAll(req.body);
@@ -36,9 +36,13 @@ const createBook = async (req, res) => {
     const newBook = await bookService.saveBook(req.body);
     return res.status(201).json(newBook);
   } catch (err) {
-    console.log(err);
-    const error = err.message || err.details[0].message;
-    return res.status(400).json({ error: error });
+    const error = err.details
+      ? res.status(400).json({ error: err.details[0].message })
+      : err.message.includes('validation failed')
+      ? res.status(400).json({ error: err.message })
+      : res.status(500).json({ error: 'Error in server' });
+
+    return error;
   }
 };
 
@@ -55,7 +59,7 @@ const updateBook = async (req, res) => {
       const key = Object.keys(err.keyValue)[0];
       const valueKey = err.keyValue[key];
       error = res.status(400).json({ error: `Duplicate Key, "${key} : ${valueKey}" ` });
-    } else if (err.details[0]) {
+    } else if (err.details) {
       error = res.status(400).json({ error: err.details[0].message });
     } else {
       error = res.status(500).json({ error: 'Error in Server' });
@@ -74,9 +78,9 @@ const deleteBook = async (req, res) => {
     let error;
     if (err.kind === 'ObjectId') {
       error = res.status(404).json({ error: `Id ${err.value} is not found` });
+    } else {
+      error = res.status(500).json({ error: 'Error in server' });
     }
-
-    error = res.status(500).json({ error: 'Error in server' });
 
     return error;
   }

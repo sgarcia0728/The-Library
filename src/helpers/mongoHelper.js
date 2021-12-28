@@ -5,7 +5,7 @@ const mongoDbSettings = [
     connectionName: process.env.MONGODB_CONNECTION_NAME,
     host: process.env.MONGODB_HOST || 'mongo',
     port: process.env.MONGODB_PORT || 27017,
-    database: process.env.MONGODB_DB_NAME || 'TheLibrary2',
+    database: process.env.MONGODB_DB_NAME || 'TheLibrary',
     user: process.env.MONGODB_USER || '',
     password: process.env.MONGODB_PASSWORD || '',
     ssl: process.env.MONGODB_SSL || false,
@@ -19,7 +19,7 @@ const mongoDbSettings = [
     //password: 'QaWsEd123',
     //seplicaSet: 'compliance-support-shard-0',
     //ssl: true,
-    //authSource: 'admin',
+    //authSource: 'admin',//
   },
 ];
 
