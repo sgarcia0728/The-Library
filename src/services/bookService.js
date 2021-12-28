@@ -1,3 +1,4 @@
+require('dotenv').config();
 const BookModel = require('../models/book');
 const helperMongo = require('../helpers/mongoHelper');
 const redisHelper = require('../helpers/redisHelper');
@@ -18,12 +19,13 @@ const getAll = async (params) => {
   sort = typeof sort !== 'object' ? JSON.parse(sort) : sort;
   pages = typeof pages !== 'object' ? JSON.parse(pages) : pages;
 
-  let books = await BookModel.find({
-    title: { $regex: params.title || '', $options: 'i' },
-    author: { $regex: params.author || '', $options: 'i' },
-    status: { $regex: params.status || '', $options: 'i' },
-    pages: { $gte: pages.min || 0, $lte: pages.max || Infinity },
-  })
+  let books = await bookModel
+    .find({
+      title: { $regex: params.title || '', $options: 'i' },
+      author: { $regex: params.author || '', $options: 'i' },
+      status: { $regex: params.status || '', $options: 'i' },
+      pages: { $gte: pages.min || 0, $lte: pages.max || Infinity },
+    })
     .sort(sort)
     .skip(pageNumber * pageSize - pageSize)
     .limit(pageSize)
@@ -41,7 +43,6 @@ const getOne = async (id) => {
 
   const book = await bookModel.findById(id).lean();
   await redisHelper.redisSet(id, JSON.stringify(book));
-  console.log(book);
   return book;
 };
 

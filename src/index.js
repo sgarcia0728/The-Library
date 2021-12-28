@@ -2,7 +2,7 @@ require('dotenv').config();
 const logger = require('@condor-labs/logger');
 const helperMongo = require('./helpers/mongoHelper');
 const PORT = process.env.PORT || 3000;
-const app = require('./app');
+//const app = require('./app');
 
 app.listen(PORT, () => {
   logger.log(`server iniciado en el puerto ${PORT}`);
@@ -30,4 +30,5 @@ process.on('message', async (msg) => {
     }
     process.exit(0);
   }
-});*/
+});
+*/

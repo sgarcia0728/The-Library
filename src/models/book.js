@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongodb = require('@condor-labs/mongodb')();
 const helperMongo = require('../helpers/mongoHelper');
 const uniqueValidator = require('mongoose-unique-validator');
